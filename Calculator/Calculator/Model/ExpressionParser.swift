@@ -14,12 +14,18 @@ enum ExpressionParser {
         
         // [해결해야할 점] for 문을 사용하지 않고 각 요소를 넣는 방법은 없을까?
         
-        for i in 0..<operators.count {
-            operatorsQueue.queue.enqueue(element: operators[i])
+//        for i in 0..<operators.count {
+//            operatorsQueue.queue.enqueue(element: operators[i])
+//        }
+        
+        operators.forEach { operatorsQueue.queue.enqueue(element: $0)
         }
         
-        for j in 0..<operands.count {
-            operandsQueue.queue.enqueue(element: Double(operands[j]) ?? 0.0)
+//        for j in 0..<operands.count {
+//            operandsQueue.queue.enqueue(element: Double(operands[j]) ?? 0.0)
+//        }
+        
+        operands.forEach { operandsQueue.queue.enqueue(element: Double($0) ?? 0.0)
         }
         
         // print를 통해 각각의 큐에 들어가는 것 확인

@@ -10,9 +10,7 @@ class ViewController: UIViewController {
 
     override func viewDidLoad() {
         super.viewDidLoad()
-        let input = "12+3-10*3/50"
-        
-        
+
         //
 //        let a = { operators.contains($0) }
 //        print(a)

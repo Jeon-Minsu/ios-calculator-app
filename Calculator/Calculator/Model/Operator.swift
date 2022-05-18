@@ -4,7 +4,7 @@
 //
 //  Created by 전민수 on 2022/05/18.
 //
-enum Operator: Character, CaseIterable {
+enum Operator: Character, CaseIterable, CalculateItem {
     case add = "+"
     case subtract = "-"
     case divide = "/"

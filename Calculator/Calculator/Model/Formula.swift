@@ -11,4 +11,8 @@ struct Formula {
     func result() -> Double {
         return 0.0
     }
+    
+//    CalculatorItemQueue().queue.enqueueStack(operands)
 }
+
+

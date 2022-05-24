@@ -48,24 +48,39 @@ class ViewController: UIViewController {
         // 은닉화 풀렸으니 다시 걸어줘야함 잊지말기
         var a = ExpressionParser.parse(from: resultLabel.text!)
         print(a.operands.queue.peek)
-        resultLabel.text = "0"
-    }
-    
-    @IBAction func addView() {
+        
+        
         let label = UILabel()
         label.isHidden = true
-        label.text = """
-            123123123
-            123123123
-            12312312312
-            """
+        label.text = resultLabel.text
         label.numberOfLines = 0
+        label.textColor = .white
+        label.font = UIFont.preferredFont(forTextStyle: .title3)
         label.adjustsFontForContentSizeCategory = true
         stackview.addArrangedSubview(label)
+        
         
         UIView.animate(withDuration: 0.3) {
             label.isHidden = false
         }
+        
+        resultLabel.text = "0"
+    }
+    @IBAction func addView() {
+        // 스크롤이 화면을 넘어가면 밑에것이 주목되게!
+//        let label = UILabel()
+//        label.isHidden = true
+//        label.text = "123123123"
+//        label.numberOfLines = 0
+//        label.textColor = .white
+//        label.font = UIFont.preferredFont(forTextStyle: .title3)
+//        label.adjustsFontForContentSizeCategory = true
+//        stackview.addArrangedSubview(label)
+//
+//
+//        UIView.animate(withDuration: 0.3) {
+//            label.isHidden = false
+//        }
         
     }
 }

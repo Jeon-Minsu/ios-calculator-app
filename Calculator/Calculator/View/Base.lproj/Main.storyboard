@@ -382,7 +382,7 @@
                     </view>
                     <connections>
                         <outlet property="resultLabel" destination="Lwz-OF-XHD" id="8qx-w6-h6e"/>
-                        <outlet property="stackview" destination="XRe-QE-UJf" id="o2o-rW-V78"/>
+                        <outlet property="stackview" destination="XRe-QE-UJf" id="MEy-MR-czY"/>
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="dkx-z0-nzr" sceneMemberID="firstResponder"/>

@@ -66,13 +66,24 @@ class ViewController: UIViewController {
         label1.adjustsFontForContentSizeCategory = true
         
         // 0이면 사칙연산자 안 되게!
-        if Double(label1.text!) != 0.0 {
+        if realInput.isEmpty == true {
+            if Double(label1.text!) != 0.0 {
+                label1.text = resultOperator.text! + " " + resultLabel.text!
+                stackview.addArrangedSubview(label1)
+                let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
+                
+                print("trimmed input = \(trimmedInput)")
+                //            formula = ExpressionParser.parse(from: trimmedInput)
+                realInput += trimmedInput
+                print(realInput)
+            }
+        } else {
             label1.text = resultOperator.text! + " " + resultLabel.text!
             stackview.addArrangedSubview(label1)
             let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
-
+            
             print("trimmed input = \(trimmedInput)")
-//            formula = ExpressionParser.parse(from: trimmedInput)
+            //            formula = ExpressionParser.parse(from: trimmedInput)
             realInput += trimmedInput
             print(realInput)
         }
@@ -113,7 +124,7 @@ class ViewController: UIViewController {
         } catch (let error) {
             switch error {
             case CalculatorError.dividedByZero:
-                resultLabel.text = "divide by zero"
+                resultLabel.text = "NaN"
             case CalculatorError.notEnoughOperands:
                 resultLabel.text = "not enough operands"
             case CalculatorError.notEnoughOperators:
@@ -127,7 +138,28 @@ class ViewController: UIViewController {
             }
         }
         
-        realInput = "0"
+        realInput = ""
     }
     
+    @IBAction func touchAllClearButton(_ sender: UIButton) {
+        while stackview.arrangedSubviews.count > 0
+        {
+            guard let last = stackview.arrangedSubviews.last else {
+                return
+            }
+            
+            self.stackview.removeArrangedSubview(last)
+        }
+        
+        resultLabel.text = "0"
+        resultOperator.text = ""
+        realInput = ""
+    }
+    
+    @IBAction func touchClearEntryButton(_ sender: UIButton) {
+        
+    }
+    
+    @IBAction func touchSignChangerButton(_ sender: UIButton) {
+    }
 }

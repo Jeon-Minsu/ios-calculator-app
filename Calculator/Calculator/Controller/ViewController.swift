@@ -30,6 +30,7 @@ class ViewController: UIViewController {
             
             self.stackview.removeArrangedSubview(last)
         }
+        print("−" == "-")
     }
     
     @IBAction func touchButton(_ sender: UIButton) {
@@ -51,10 +52,13 @@ class ViewController: UIViewController {
         if let stringDigit: String = digit {
             if resultLabel.text! == "0" {
                 resultLabel.text! = digit!
+            } else if resultLabel.text! == "00" {
+                resultLabel.text! = "0"
             } else {
                 resultLabel.text! += stringDigit
             }
         }
+        
     }
     
     @IBAction func touchOperatorButton(_ sender: UIButton) {
@@ -181,8 +185,20 @@ class ViewController: UIViewController {
     
     @IBAction func touchClearEntryButton(_ sender: UIButton) {
         resultLabel.text = "0"
+        
+        if realInput == "" {
+            while stackview.arrangedSubviews.count > 0
+            {
+                guard let last = stackview.arrangedSubviews.last else {
+                    return
+                }
+                
+                self.stackview.removeArrangedSubview(last)
+            }
+        }
     }
     
     @IBAction func touchSignChangerButton(_ sender: UIButton) {
+        resultLabel.text! = String(-Double(resultLabel.text!)!)
     }
 }

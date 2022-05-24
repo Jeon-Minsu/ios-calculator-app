@@ -9,6 +9,8 @@ import UIKit
 class ViewController: UIViewController {
     
     @IBOutlet weak var resultLabel: UILabel!
+    @IBOutlet var stackview: UIStackView!
+    
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -49,5 +51,21 @@ class ViewController: UIViewController {
         resultLabel.text = "0"
     }
     
-    
+    @IBAction func addView() {
+        let label = UILabel()
+        label.isHidden = true
+        label.text = """
+            123123123
+            123123123
+            12312312312
+            """
+        label.numberOfLines = 0
+        label.adjustsFontForContentSizeCategory = true
+        stackview.addArrangedSubview(label)
+        
+        UIView.animate(withDuration: 0.3) {
+            label.isHidden = false
+        }
+        
+    }
 }

@@ -20,6 +20,16 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         resultLabel.text = "0"
         resultOperator.text = ""
+        
+        // 왼쪽으로 튀어나오고 난리났음 수정 필요!
+        while stackview.arrangedSubviews.count > 0
+        {
+            guard let last = stackview.arrangedSubviews.last else {
+                return
+            }
+            
+            self.stackview.removeArrangedSubview(last)
+        }
     }
     
     @IBAction func touchButton(_ sender: UIButton) {

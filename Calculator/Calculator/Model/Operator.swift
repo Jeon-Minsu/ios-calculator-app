@@ -44,3 +44,7 @@ enum Operator: Character, CaseIterable, CalculateItem {
         return lhs * rhs
     }
 }
+
+
+// 스택뷰 아래로 최신화 되게
+// 

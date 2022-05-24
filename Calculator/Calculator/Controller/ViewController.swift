@@ -79,6 +79,21 @@ class ViewController: UIViewController {
         label1.font = UIFont.preferredFont(forTextStyle: .title3)
         label1.adjustsFontForContentSizeCategory = true
         
+        if Double(label1.text!) != 0.0 {
+            label1.text = resultOperator.text! + " " + resultLabel.text!
+            stackview.addArrangedSubview(label1)
+            let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
+            
+            print("trimmed input = \(trimmedInput)")
+            //            formula = ExpressionParser.parse(from: trimmedInput)
+            realInput += trimmedInput
+            print(realInput)
+        }
+        
+        UIView.animate(withDuration: 0.3) {
+            label1.isHidden = false
+        }
+        
         // 0이면 사칙연산자 안 되게!
         //        if realInput.isEmpty == true {
         //            if Double(label1.text!) != 0.0 {
@@ -102,23 +117,6 @@ class ViewController: UIViewController {
         //            print(realInput)
         //        }
         
-        
-        if Double(label1.text!) != 0.0 {
-            label1.text = resultOperator.text! + " " + resultLabel.text!
-            stackview.addArrangedSubview(label1)
-            let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
-            
-            print("trimmed input = \(trimmedInput)")
-            //            formula = ExpressionParser.parse(from: trimmedInput)
-            realInput += trimmedInput
-            print(realInput)
-        }
-        
-        
-        UIView.animate(withDuration: 0.3) {
-            label1.isHidden = false
-        }
-        
         resultLabel.text = "0"
         
         
@@ -133,9 +131,33 @@ class ViewController: UIViewController {
     }
     
     @IBAction func touchResultButton(_ sender: UIButton) {
-        realInput += resultOperator.text!
-        realInput += resultLabel.text!
+        let label1 = UILabel()
+        label1.isHidden = true
+        label1.text = resultLabel.text!
+        label1.numberOfLines = 0
+        label1.textColor = .white
+        label1.font = UIFont.preferredFont(forTextStyle: .title3)
+        label1.adjustsFontForContentSizeCategory = true
+        
+        
+        label1.text = resultOperator.text! + " " + resultLabel.text!
+        print("labe1.text = \(label1.text ?? "0")")
+        stackview.addArrangedSubview(label1)
+        let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
+        
+        print("trimmed input = \(trimmedInput)")
+        //            formula = ExpressionParser.parse(from: trimmedInput)
+        UIView.animate(withDuration: 0.3) {
+            label1.isHidden = false
+        }
+        
+        realInput += trimmedInput
         print(realInput)
+        
+        
+//        realInput += resultOperator.text!
+//        realInput += resultLabel.text!
+//        print(realInput)
         
         formula = ExpressionParser.parse(from: realInput)
         
@@ -145,6 +167,8 @@ class ViewController: UIViewController {
         print(formula.operators.queue.enqueueStack)
         print(formula.operands.queue.dequeueStack)
         print(formula.operators.queue.dequeueStack)
+        
+
         
         do {
             resultLabel.text = String(try formula.result())
@@ -166,6 +190,8 @@ class ViewController: UIViewController {
         }
         
         realInput = ""
+        
+        
     }
     
     @IBAction func touchAllClearButton(_ sender: UIButton) {

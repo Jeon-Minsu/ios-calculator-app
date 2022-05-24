@@ -14,7 +14,7 @@ class ViewController: UIViewController {
     
     var formula: Formula = Formula(operands: CalculatorItemQueue<Double>(), operators: CalculatorItemQueue<String>())
     
-    var realInput = ""
+    private var realInput = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -31,17 +31,6 @@ class ViewController: UIViewController {
             self.stackview.removeArrangedSubview(last)
         }
         print("−" == "-")
-    }
-    
-    @IBAction func touchButton(_ sender: UIButton) {
-        
-        
-        
-        
-        //        if let digit2 = Double(digit) {
-        //            print("\(digit2) touched")
-        //            resultLabel.text! += String(digit2)
-        //        }
     }
     
     @IBAction func touchNumberButton(_ sender: UIButton) {

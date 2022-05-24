@@ -10,11 +10,13 @@ class ViewController: UIViewController {
     
     @IBOutlet weak var resultLabel: UILabel!
     @IBOutlet var stackview: UIStackView!
+    @IBOutlet weak var resultOperator: UILabel!
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         resultLabel.text = "0"
+        resultOperator.text = ""
     }
     
     @IBAction func touchButton(_ sender: UIButton) {
@@ -46,41 +48,30 @@ class ViewController: UIViewController {
         // 연산자가 입력되면 결과label을 0으로 만들고
         // 결과 label에 이때까지 입력된 값을 스크롤뷰 내 stackView로 올려야함
         // 은닉화 풀렸으니 다시 걸어줘야함 잊지말기
-        var a = ExpressionParser.parse(from: resultLabel.text!)
-        print(a.operands.queue.peek)
         
+        // 이 값은 나중에 계산할때만 쓰면 되는건가?
+        ExpressionParser.parse(from: resultLabel.text!)
         
-        let label = UILabel()
-        label.isHidden = true
-        label.text = resultLabel.text
-        label.numberOfLines = 0
-        label.textColor = .white
-        label.font = UIFont.preferredFont(forTextStyle: .title3)
-        label.adjustsFontForContentSizeCategory = true
-        stackview.addArrangedSubview(label)
+        let label1 = UILabel()
+        label1.isHidden = true
+        label1.text = resultLabel.text!
+        label1.numberOfLines = 0
+        label1.textColor = .white
+        label1.font = UIFont.preferredFont(forTextStyle: .title3)
+        label1.adjustsFontForContentSizeCategory = true
         
-        
-        UIView.animate(withDuration: 0.3) {
-            label.isHidden = false
+        // 0이면 사칙연산자 안 되게!
+        if Double(label1.text!) != 0.0 {
+            label1.text = resultOperator.text! + " " + resultLabel.text!
+            stackview.addArrangedSubview(label1)
         }
         
+        UIView.animate(withDuration: 0.3) {
+            label1.isHidden = false
+        }
+    
         resultLabel.text = "0"
-    }
-    @IBAction func addView() {
-        // 스크롤이 화면을 넘어가면 밑에것이 주목되게!
-//        let label = UILabel()
-//        label.isHidden = true
-//        label.text = "123123123"
-//        label.numberOfLines = 0
-//        label.textColor = .white
-//        label.font = UIFont.preferredFont(forTextStyle: .title3)
-//        label.adjustsFontForContentSizeCategory = true
-//        stackview.addArrangedSubview(label)
-//
-//
-//        UIView.animate(withDuration: 0.3) {
-//            label.isHidden = false
-//        }
-        
+
+        resultOperator.text = sender.currentTitle
     }
 }

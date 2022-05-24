@@ -119,7 +119,6 @@
                                                     <color key="titleColor" white="1" alpha="1" colorSpace="custom" customColorSpace="genericGamma22GrayColorSpace"/>
                                                 </state>
                                                 <connections>
-                                                    <action selector="addView" destination="BYZ-38-t0r" eventType="touchUpInside" id="aUO-QZ-z41"/>
                                                     <action selector="touchButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="g0G-Wt-6BD"/>
                                                     <action selector="touchOperatorButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="i6s-nK-jnf"/>
                                                 </connections>
@@ -382,6 +381,7 @@
                     </view>
                     <connections>
                         <outlet property="resultLabel" destination="Lwz-OF-XHD" id="8qx-w6-h6e"/>
+                        <outlet property="resultOperator" destination="HPC-iy-qdm" id="cxG-2u-qFJ"/>
                         <outlet property="stackview" destination="XRe-QE-UJf" id="MEy-MR-czY"/>
                     </connections>
                 </viewController>

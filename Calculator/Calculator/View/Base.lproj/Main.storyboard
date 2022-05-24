@@ -338,7 +338,6 @@
                                                 </state>
                                                 <connections>
                                                     <action selector="touchButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="pBB-eH-9Ms"/>
-                                                    <action selector="touchOperatorButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="DMC-jh-K2N"/>
                                                     <action selector="touchResultButton:" destination="BYZ-38-t0r" eventType="touchUpInside" id="xIs-gg-ipJ"/>
                                                 </connections>
                                             </button>

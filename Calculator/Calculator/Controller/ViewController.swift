@@ -37,10 +37,10 @@ class ViewController: UIViewController {
         
         
         
-//        if let digit2 = Double(digit) {
-//            print("\(digit2) touched")
-//            resultLabel.text! += String(digit2)
-//        }
+        //        if let digit2 = Double(digit) {
+        //            print("\(digit2) touched")
+        //            resultLabel.text! += String(digit2)
+        //        }
     }
     
     @IBAction func touchNumberButton(_ sender: UIButton) {
@@ -64,8 +64,8 @@ class ViewController: UIViewController {
         
         
         // 이 값은 나중에 계산할때만 쓰면 되는건가?
-//        formula = ExpressionParser.parse(from: resultLabel.text!)
-//        formula = ExpressionParser.parse(from: resultOperator.text!)
+        //        formula = ExpressionParser.parse(from: resultLabel.text!)
+        //        formula = ExpressionParser.parse(from: resultOperator.text!)
         
         let label1 = UILabel()
         label1.isHidden = true
@@ -76,18 +76,30 @@ class ViewController: UIViewController {
         label1.adjustsFontForContentSizeCategory = true
         
         // 0이면 사칙연산자 안 되게!
-        if realInput.isEmpty == true {
-            if Double(label1.text!) != 0.0 {
-                label1.text = resultOperator.text! + " " + resultLabel.text!
-                stackview.addArrangedSubview(label1)
-                let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
-                
-                print("trimmed input = \(trimmedInput)")
-                //            formula = ExpressionParser.parse(from: trimmedInput)
-                realInput += trimmedInput
-                print(realInput)
-            }
-        } else {
+        //        if realInput.isEmpty == true {
+        //            if Double(label1.text!) != 0.0 {
+        //                label1.text = resultOperator.text! + " " + resultLabel.text!
+        //                stackview.addArrangedSubview(label1)
+        //                let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
+        //
+        //                print("trimmed input = \(trimmedInput)")
+        //                //            formula = ExpressionParser.parse(from: trimmedInput)
+        //                realInput += trimmedInput
+        //                print(realInput)
+        //            }
+        //        } else {
+        //            label1.text = resultOperator.text! + " " + resultLabel.text!
+        //            stackview.addArrangedSubview(label1)
+        //            let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
+        //
+        //            print("trimmed input = \(trimmedInput)")
+        //            //            formula = ExpressionParser.parse(from: trimmedInput)
+        //            realInput += trimmedInput
+        //            print(realInput)
+        //        }
+        
+        
+        if Double(label1.text!) != 0.0 {
             label1.text = resultOperator.text! + " " + resultLabel.text!
             stackview.addArrangedSubview(label1)
             let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
@@ -98,17 +110,16 @@ class ViewController: UIViewController {
             print(realInput)
         }
         
+        
         UIView.animate(withDuration: 0.3) {
             label1.isHidden = false
         }
-    
+        
         resultLabel.text = "0"
         
-        if sender.currentTitle != "=" {
-            resultOperator.text = sender.currentTitle
-        } else {
-            resultOperator.text = ""
-        }
+        
+        resultOperator.text = sender.currentTitle
+        
         
         
         print(formula.operands.queue.enqueueStack)
@@ -118,11 +129,13 @@ class ViewController: UIViewController {
     }
     
     @IBAction func touchResultButton(_ sender: UIButton) {
-//        formula = ExpressionParser.parse(from: resultLabel.text!)
-//        formula = ExpressionParser.parse(from: resultOperator.text!)
+        realInput += resultOperator.text!
+        realInput += resultLabel.text!
         print(realInput)
+        
         formula = ExpressionParser.parse(from: realInput)
         
+        resultOperator.text = ""
         
         print(formula.operands.queue.enqueueStack)
         print(formula.operators.queue.enqueueStack)
@@ -167,7 +180,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func touchClearEntryButton(_ sender: UIButton) {
-        
+        resultLabel.text = "0"
     }
     
     @IBAction func touchSignChangerButton(_ sender: UIButton) {

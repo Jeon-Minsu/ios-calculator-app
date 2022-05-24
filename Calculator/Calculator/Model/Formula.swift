@@ -5,7 +5,7 @@
 //  Created by 전민수 on 2022/05/19.
 //
 struct Formula {
-    private var operands: CalculatorItemQueue<Double>
+    var operands: CalculatorItemQueue<Double>
     private var operators: CalculatorItemQueue<String>
     
     mutating func result() throws -> Double {

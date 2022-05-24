@@ -11,6 +11,7 @@ class ViewController: UIViewController {
     @IBOutlet weak var resultLabel: UILabel!
     @IBOutlet var stackview: UIStackView!
     @IBOutlet weak var resultOperator: UILabel!
+    @IBOutlet weak var scrollView: UIScrollView!
     
     var formula: Formula = Formula(operands: CalculatorItemQueue<Double>(), operators: CalculatorItemQueue<String>())
     
@@ -117,6 +118,10 @@ class ViewController: UIViewController {
         print(formula.operators.queue.enqueueStack)
         print(formula.operands.queue.dequeueStack)
         print(formula.operators.queue.dequeueStack)
+        
+        scrollView.setContentOffset(CGPoint(x: 0,
+                                                y: scrollView.contentSize.height - scrollView.bounds.height),
+                                        animated: true)
     }
     
     @IBAction func touchResultButton(_ sender: UIButton) {
@@ -241,7 +246,6 @@ class ViewController: UIViewController {
     }
 }
 
-// 1. 스택뷰 아래로 최신화 되게
 // 2. = 버튼을 눌러 연산을 마친 후 다시 =을 눌러도 이전 연산을 다시 연산하지 않습니다
 // 3. 결과값 나온 다음 또 숫자 입력하면 현재 결과값이 스택뷰로 올라가고 다시 새로운 숫자가 입력되게 해야하나?
 // 4. 스택뷰 왼쪽에 뜨는거 안 없어져서 그런것 같은데?

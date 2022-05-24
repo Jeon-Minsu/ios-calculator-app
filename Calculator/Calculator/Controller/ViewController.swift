@@ -71,7 +71,7 @@ class ViewController: UIViewController {
         if Double(label1.text!) != 0.0 {
             label1.text = resultOperator.text! + " " + resultLabel.text!
             stackview.addArrangedSubview(label1)
-            let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
+            let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
             
             print("trimmed input = \(trimmedInput)")
             //            formula = ExpressionParser.parse(from: trimmedInput)
@@ -132,7 +132,8 @@ class ViewController: UIViewController {
         label1.text = resultOperator.text! + " " + resultLabel.text!
         print("labe1.text = \(label1.text ?? "0")")
         stackview.addArrangedSubview(label1)
-        let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
+        let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
+
         
         print("trimmed input = \(trimmedInput)")
         //            formula = ExpressionParser.parse(from: trimmedInput)
@@ -160,7 +161,26 @@ class ViewController: UIViewController {
 
         
         do {
-            resultLabel.text = String(try formula.result())
+            let numberFormatter = NumberFormatter()
+            numberFormatter.numberStyle = .decimal
+//            numberFormatter.maximumFractionDigits = -2 //소수점 최대 자릿수
+//            numberFormatter.roundingMode = .up
+//            numberFormatter.maximumIntegerDigits = 20
+//            numberFormatter.maximumSignificantDigits = 20
+//            numberFormatter.minimumSignificantDigits = 3  // 자르길 원하는 자릿수
+            
+//            numberFormatter.roundingMode = .up
+//
+            numberFormatter.maximumFractionDigits = 20
+            numberFormatter.maximumIntegerDigits = 20
+            
+//            numberFormatter.usesSignificantDigits = true
+//            numberFormatter.maximumSignificantDigits = 20
+            
+            
+            let formattedResult = numberFormatter.string(from: try formula.result() as NSNumber)
+            resultLabel.text = formattedResult
+//            resultLabel.text = String(try formula.result())
         } catch (let error) {
             switch error {
             case CalculatorError.dividedByZero:
@@ -214,6 +234,14 @@ class ViewController: UIViewController {
     }
     
     @IBAction func touchSignChangerButton(_ sender: UIButton) {
-        resultLabel.text! = String(-Double(resultLabel.text!)!)
+        if Double(resultLabel.text!)! != 0 {
+            resultLabel.text! = String(-Double(resultLabel.text!)!)
+        }
+        
     }
 }
+
+// 1. 스택뷰 아래로 최신화 되게
+// 2. = 버튼을 눌러 연산을 마친 후 다시 =을 눌러도 이전 연산을 다시 연산하지 않습니다
+// 3. 결과값 나온 다음 또 숫자 입력하면 현재 결과값이 스택뷰로 올라가고 다시 새로운 숫자가 입력되게 해야하나?
+// 4. 스택뷰 왼쪽에 뜨는거 안 없어져서 그런것 같은데?

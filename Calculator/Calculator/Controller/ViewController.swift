@@ -12,6 +12,9 @@ class ViewController: UIViewController {
     @IBOutlet var stackview: UIStackView!
     @IBOutlet weak var resultOperator: UILabel!
     
+    var formula: Formula = Formula(operands: CalculatorItemQueue<Double>(), operators: CalculatorItemQueue<String>())
+    
+    var realInput = ""
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -47,10 +50,12 @@ class ViewController: UIViewController {
     @IBAction func touchOperatorButton(_ sender: UIButton) {
         // 연산자가 입력되면 결과label을 0으로 만들고
         // 결과 label에 이때까지 입력된 값을 스크롤뷰 내 stackView로 올려야함
-        // 은닉화 풀렸으니 다시 걸어줘야함 잊지말기
+        // 스크롤뷰 내 스택뷰 기본값 없애야 함!
+        
         
         // 이 값은 나중에 계산할때만 쓰면 되는건가?
-        ExpressionParser.parse(from: resultLabel.text!)
+//        formula = ExpressionParser.parse(from: resultLabel.text!)
+//        formula = ExpressionParser.parse(from: resultOperator.text!)
         
         let label1 = UILabel()
         label1.isHidden = true
@@ -64,6 +69,12 @@ class ViewController: UIViewController {
         if Double(label1.text!) != 0.0 {
             label1.text = resultOperator.text! + " " + resultLabel.text!
             stackview.addArrangedSubview(label1)
+            let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
+
+            print("trimmed input = \(trimmedInput)")
+//            formula = ExpressionParser.parse(from: trimmedInput)
+            realInput += trimmedInput
+            print(realInput)
         }
         
         UIView.animate(withDuration: 0.3) {
@@ -71,7 +82,52 @@ class ViewController: UIViewController {
         }
     
         resultLabel.text = "0"
-
-        resultOperator.text = sender.currentTitle
+        
+        if sender.currentTitle != "=" {
+            resultOperator.text = sender.currentTitle
+        } else {
+            resultOperator.text = ""
+        }
+        
+        
+        print(formula.operands.queue.enqueueStack)
+        print(formula.operators.queue.enqueueStack)
+        print(formula.operands.queue.dequeueStack)
+        print(formula.operators.queue.dequeueStack)
     }
+    
+    @IBAction func touchResultButton(_ sender: UIButton) {
+//        formula = ExpressionParser.parse(from: resultLabel.text!)
+//        formula = ExpressionParser.parse(from: resultOperator.text!)
+        print(realInput)
+        formula = ExpressionParser.parse(from: realInput)
+        
+        
+        print(formula.operands.queue.enqueueStack)
+        print(formula.operators.queue.enqueueStack)
+        print(formula.operands.queue.dequeueStack)
+        print(formula.operators.queue.dequeueStack)
+        
+        do {
+            resultLabel.text = String(try formula.result())
+        } catch (let error) {
+            switch error {
+            case CalculatorError.dividedByZero:
+                resultLabel.text = "divide by zero"
+            case CalculatorError.notEnoughOperands:
+                resultLabel.text = "not enough operands"
+            case CalculatorError.notEnoughOperators:
+                resultLabel.text = "not enough operators"
+            case CalculatorError.emptyQueues:
+                resultLabel.text = "empty queues"
+            case CalculatorError.invalidOperator:
+                resultLabel.text = "invalid operator"
+            default:
+                resultLabel.text = "unknown error"
+            }
+        }
+        
+        realInput = "0"
+    }
+    
 }

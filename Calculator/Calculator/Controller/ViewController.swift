@@ -178,7 +178,8 @@ class ViewController: UIViewController {
                 return
             }
             
-            self.stackview.removeArrangedSubview(last)
+            stackview.removeArrangedSubview(last)
+            last.removeFromSuperview()
         }
     }
     

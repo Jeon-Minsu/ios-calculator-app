@@ -67,7 +67,9 @@ class ViewController: UIViewController {
             return
         }
         
-        let result = convertResultLabel()
+        guard let result = convertResultLabel() else {
+            return
+        }
         formatCalculatorItems(number: result)
         
     }
@@ -149,16 +151,21 @@ class ViewController: UIViewController {
     }
     
     @IBAction func touchSignChangerButton(_ sender: UIButton) {
-        guard let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "") else {
+        guard let trimmedResultLabelToDouble = convertResultLabel() else {
             return
         }
         
-        if Double(trimmedResultLabel) != 0 {
-            resultLabel.text! = String(-Double(trimmedResultLabel)!)
-            let result = convertResultLabel()
-            formatCalculatorItems(number: result)
+        guard trimmedResultLabelToDouble != 0 else {
+            return
         }
         
+        resultLabel.text = String(-trimmedResultLabelToDouble)
+        
+        guard let result = convertResultLabel() else {
+            return
+        }
+        
+        formatCalculatorItems(number: result)
     }
     
     func clearStackView() {
@@ -172,9 +179,16 @@ class ViewController: UIViewController {
         }
     }
     
-    func convertResultLabel() -> Double {
-        let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
-        let trimmedResultLabelToDouble = Double(trimmedResultLabel!)!
+    func convertResultLabel() -> Double? {
+        guard let text = resultLabel.text else {
+            return nil
+        }
+        
+        let trimmedResultLabel = text.replacingOccurrences(of: ",", with: "")
+        
+        guard let trimmedResultLabelToDouble = Double(trimmedResultLabel) else {
+            return nil
+        }
         
         return trimmedResultLabelToDouble
     }
@@ -213,12 +227,14 @@ class ViewController: UIViewController {
     }
     
     func addCalculatorItems() {
-        let result = convertResultLabel()
+        guard let result = convertResultLabel() else {
+            return
+        }
         formatCalculatorItems(number: result)
         
         let label1 = UILabel()
         label1.isHidden = true
-        label1.text = resultLabel.text!
+        label1.text = resultLabel.text
         label1.numberOfLines = 0
         label1.textColor = .white
         label1.font = UIFont.preferredFont(forTextStyle: .title3)
@@ -237,4 +253,4 @@ class ViewController: UIViewController {
 }
 
 // 4. 스택뷰 왼쪽에 뜨는거 안 없어져서 그런것 같은데?
-
+// UILabel.text 옵셔널 처리

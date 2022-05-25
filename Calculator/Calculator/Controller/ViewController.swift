@@ -22,7 +22,6 @@ class ViewController: UIViewController {
         resultLabel.text = "0"
         resultOperator.text = ""
         
-        // 왼쪽으로 튀어나오고 난리났음 수정 필요!
         clearStackView()
     }
     
@@ -34,11 +33,9 @@ class ViewController: UIViewController {
             return
         }
         
-        
-        
         let digit = sender.currentTitle
         
-        guard digit != "." || resultLabel.text!.filter { $0 == "." }.count < 1 else {
+        guard digit != "." || resultLabel.text!.filter({ $0 == "." }).count < 1 else {
             return
         }
         
@@ -59,9 +56,6 @@ class ViewController: UIViewController {
     }
     
     @IBAction func touchOperatorButton(_ sender: UIButton) {
-        // 연산자가 입력되면 결과label을 0으로 만들고
-        // 결과 label에 이때까지 입력된 값을 스크롤뷰 내 stackView로 올려야함
-        // 스크롤뷰 내 스택뷰 기본값 없애야 함!
         guard resultLabel.text != "0" ||  stackview.arrangedSubviews.count > 0 else {
             return
         }
@@ -85,23 +79,9 @@ class ViewController: UIViewController {
                 stackview.addArrangedSubview(label1)
                 let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
                 
-                print("trimmed input = \(trimmedInput)")
-                //            formula = ExpressionParser.parse(from: trimmedInput)
                 realInput += trimmedInput
-                print(realInput)
-                
             } else {
-                
-                
                 formatNumber()
-//                let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
-//                let numberFormatter = NumberFormatter()
-//                numberFormatter.numberStyle = .decimal
-//                numberFormatter.maximumFractionDigits = 20
-//                numberFormatter.maximumIntegerDigits = 20
-//                let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!)! as NSNumber)
-//
-//                resultLabel.text! = trimmedResultLabel!
                 
                 label1.text = resultOperator.text! + " " + resultLabel.text!
                 
@@ -118,22 +98,11 @@ class ViewController: UIViewController {
             label1.isHidden = false
         }
         
-        
         resultLabel.text = "0"
-        
         
         resultOperator.text = sender.currentTitle
         
-        
-        
-        print(formula.operands.queue.enqueueStack)
-        print(formula.operators.queue.enqueueStack)
-        print(formula.operands.queue.dequeueStack)
-        print(formula.operators.queue.dequeueStack)
-        
-        scrollView.setContentOffset(CGPoint(x: 0,
-                                            y: scrollView.contentSize.height - scrollView.bounds.height),
-                                    animated: true)
+        goToBottomOfScrollView()
     }
     
     @IBAction func touchResultButton(_ sender: UIButton) {
@@ -156,50 +125,28 @@ class ViewController: UIViewController {
         stackview.addArrangedSubview(label1)
         let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
         
-        
-        print("trimmed input = \(trimmedInput)")
-        //            formula = ExpressionParser.parse(from: trimmedInput)
         UIView.animate(withDuration: 0.3) {
             label1.isHidden = false
         }
         
         realInput += trimmedInput
-        print(realInput)
-        
         
         formula = ExpressionParser.parse(from: realInput)
         
         resultOperator.text = ""
         
-        
-        print(formula.operands.queue.enqueueStack)
-        print(formula.operators.queue.enqueueStack)
-        print(formula.operands.queue.dequeueStack)
-        print(formula.operators.queue.dequeueStack)
-        
-        
-        
         do {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
-            //            numberFormatter.maximumFractionDigits = -2 //소수점 최대 자릿수
-            //            numberFormatter.roundingMode = .up
-            //            numberFormatter.maximumIntegerDigits = 20
-            //            numberFormatter.maximumSignificantDigits = 20
-            //            numberFormatter.minimumSignificantDigits = 3  // 자르길 원하는 자릿수
-            
-            //            numberFormatter.roundingMode = .up
-            //
             numberFormatter.maximumFractionDigits = 20
             numberFormatter.maximumIntegerDigits = 20
-            
+            //            numberFormatter.roundingMode = .ceiling
             //            numberFormatter.usesSignificantDigits = true
             //            numberFormatter.maximumSignificantDigits = 20
             
-            
             let formattedResult = numberFormatter.string(from: try formula.result() as NSNumber)
             resultLabel.text = formattedResult
-            //            resultLabel.text = String(try formula.result())
+            
         } catch (let error) {
             switch error {
             case CalculatorError.dividedByZero:
@@ -219,7 +166,7 @@ class ViewController: UIViewController {
         
         realInput = ""
         
-        
+        goToBottomOfScrollView()
     }
     
     @IBAction func touchAllClearButton(_ sender: UIButton) {
@@ -272,6 +219,12 @@ class ViewController: UIViewController {
         let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!)! as NSNumber)
         
         resultLabel.text! = formattedResult!
+    }
+    
+    func goToBottomOfScrollView() {
+        scrollView.setContentOffset(CGPoint(x: 0,
+                                            y: scrollView.contentSize.height - scrollView.bounds.height),
+                                    animated: true)
     }
 }
 

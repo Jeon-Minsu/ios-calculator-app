@@ -19,8 +19,8 @@ class ViewController: UIViewController {
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        resultLabel.text = "0"
-        resultOperator.text = ""
+        resetResultLabel()
+        resetResultOperator()
         
         clearStackView()
     }
@@ -98,7 +98,7 @@ class ViewController: UIViewController {
             label1.isHidden = false
         }
         
-        resultLabel.text = "0"
+        resetResultLabel()
         
         resultOperator.text = sender.currentTitle
         
@@ -133,7 +133,7 @@ class ViewController: UIViewController {
         
         formula = ExpressionParser.parse(from: realInput)
         
-        resultOperator.text = ""
+        resetResultOperator()
         
         do {
             let numberFormatter = NumberFormatter()
@@ -164,21 +164,19 @@ class ViewController: UIViewController {
             }
         }
         
-        realInput = ""
-        
         goToBottomOfScrollView()
+        resetNumberInput()
     }
     
     @IBAction func touchAllClearButton(_ sender: UIButton) {
         clearStackView()
-        
-        resultLabel.text = "0"
-        resultOperator.text = ""
-        realInput = ""
+        resetResultLabel()
+        resetResultOperator()
+        resetNumberInput()
     }
     
     @IBAction func touchClearEntryButton(_ sender: UIButton) {
-        resultLabel.text = "0"
+        resetResultLabel()
         
         if realInput == "" {
             clearStackView()
@@ -226,6 +224,19 @@ class ViewController: UIViewController {
                                             y: scrollView.contentSize.height - scrollView.bounds.height),
                                     animated: true)
     }
+    
+    func resetResultLabel() {
+        resultLabel.text = "0"
+    }
+    
+    func resetResultOperator() {
+        resultOperator.text = ""
+    }
+    
+    func resetNumberInput() {
+        realInput = ""
+    }
+    
 }
 
 // 4. 스택뷰 왼쪽에 뜨는거 안 없어져서 그런것 같은데?

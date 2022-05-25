@@ -19,11 +19,11 @@ class ViewController: UIViewController {
         super.viewDidLoad()
         resetResultLabel()
         resetResultOperator()
-        
+        resetNumberInput()
         clearStackView()
     }
     
-    @IBAction func touchNumberButton(_ sender: UIButton) {
+    @IBAction private func touchNumberButton(_ sender: UIButton) {
         guard stackview.arrangedSubviews.count <= 0 || resultOperator.text != "" else {
             clearStackView()
             
@@ -74,7 +74,7 @@ class ViewController: UIViewController {
         
     }
     
-    @IBAction func touchOperatorButton(_ sender: UIButton) {
+    @IBAction private func touchOperatorButton(_ sender: UIButton) {
 //        guard let resultLabel = resultLabel else {
 //            return
 //        }
@@ -105,7 +105,7 @@ class ViewController: UIViewController {
         goToBottomOfScrollView()
     }
     
-    @IBAction func touchResultButton(_ sender: UIButton) {
+    @IBAction private func touchResultButton(_ sender: UIButton) {
         guard resultOperator.text != "" else {
             return
         }
@@ -139,14 +139,14 @@ class ViewController: UIViewController {
         resetNumberInput()
     }
     
-    @IBAction func touchAllClearButton(_ sender: UIButton) {
+    @IBAction private func touchAllClearButton(_ sender: UIButton) {
         clearStackView()
         resetResultLabel()
         resetResultOperator()
         resetNumberInput()
     }
     
-    @IBAction func touchClearEntryButton(_ sender: UIButton) {
+    @IBAction private func touchClearEntryButton(_ sender: UIButton) {
         resetResultLabel()
         
         if realInput == "" {
@@ -154,7 +154,7 @@ class ViewController: UIViewController {
         }
     }
     
-    @IBAction func touchSignChangerButton(_ sender: UIButton) {
+    @IBAction private func touchSignChangerButton(_ sender: UIButton) {
         guard let trimmedResultLabelToDouble = convertResultLabel() else {
             return
         }
@@ -172,7 +172,7 @@ class ViewController: UIViewController {
         formatCalculatorItems(number: result)
     }
     
-    func clearStackView() {
+    private func clearStackView() {
         while stackview.arrangedSubviews.count > 0 {
             guard let last = stackview.arrangedSubviews.last else {
                 return
@@ -182,7 +182,7 @@ class ViewController: UIViewController {
         }
     }
     
-    func convertResultLabel() -> Double? {
+    private func convertResultLabel() -> Double? {
         guard let text = resultLabel.text else {
             return nil
         }
@@ -196,7 +196,7 @@ class ViewController: UIViewController {
         return trimmedResultLabelToDouble
     }
     
-    func formatCalculatorItems(number: Double) {
+    private func formatCalculatorItems(number: Double) {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
         numberFormatter.minimumIntegerDigits = 1
@@ -211,25 +211,25 @@ class ViewController: UIViewController {
         resultLabel.text = formattedResult
     }
     
-    func goToBottomOfScrollView() {
+    private func goToBottomOfScrollView() {
         scrollView.setContentOffset(CGPoint(x: 0,
                                             y: scrollView.contentSize.height - scrollView.bounds.height),
                                     animated: true)
     }
     
-    func resetResultLabel() {
+    private func resetResultLabel() {
         resultLabel.text = "0"
     }
     
-    func resetResultOperator() {
+    private func resetResultOperator() {
         resultOperator.text = ""
     }
     
-    func resetNumberInput() {
+    private func resetNumberInput() {
         realInput = ""
     }
     
-    func addCalculatorItems() {
+    private func addCalculatorItems() {
         guard let result = convertResultLabel() else {
             return
         }

@@ -27,8 +27,6 @@ class ViewController: UIViewController {
     }
     
     @IBAction func touchNumberButton(_ sender: UIButton) {
-        // 처음 0으로 시작하는데
-        // 숫자가 입력되면 0을 없애야함
         guard stackview.arrangedSubviews.count <= 0 || resultOperator.text != "" else {
             clearStackView()
             
@@ -36,27 +34,38 @@ class ViewController: UIViewController {
             return
         }
         
+        
+        
         let digit = sender.currentTitle
+        
+        guard digit != "." || resultLabel.text!.filter { $0 == "." }.count < 1 else {
+            return
+        }
         
         if let stringDigit: String = digit {
             if resultLabel.text! == "0" {
-                resultLabel.text! = digit!
+                resultLabel.text! = stringDigit
             } else if resultLabel.text! == "00" {
                 resultLabel.text! = "0"
             } else {
                 resultLabel.text! += stringDigit
                 
                 
-                let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
-                let numberFormatter = NumberFormatter()
-                numberFormatter.numberStyle = .decimal
-                numberFormatter.maximumFractionDigits = 20
-                numberFormatter.maximumIntegerDigits = 20
-                let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!) as! NSNumber)
+//                formatNumber()
                 
-                
-                resultLabel.text! = formattedResult!
+//                let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
+//                let numberFormatter = NumberFormatter()
+//                numberFormatter.numberStyle = .decimal
+//                numberFormatter.maximumFractionDigits = 20
+//                numberFormatter.maximumIntegerDigits = 20
+//                let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!)! as NSNumber)
+//
+//                resultLabel.text! = formattedResult!
             }
+        }
+        
+        if resultLabel.text!.contains(".") == false {
+            formatNumber()
         }
         
     }
@@ -90,15 +99,7 @@ class ViewController: UIViewController {
                 
                 clearStackView()
                 
-                let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
-                let numberFormatter = NumberFormatter()
-                numberFormatter.numberStyle = .decimal
-                numberFormatter.maximumFractionDigits = 20
-                numberFormatter.maximumIntegerDigits = 20
-                let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!) as! NSNumber)
-                
-                
-                resultLabel.text! = formattedResult!
+                formatNumber()
                 
                 label1.text = resultOperator.text! + " " + resultLabel.text!
                 stackview.addArrangedSubview(label1)
@@ -110,26 +111,24 @@ class ViewController: UIViewController {
                 print(realInput)
                 
             } else {
-                print("resultLabel text is \(resultLabel.text)"
-                )
                 
                 
-                let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
-                let numberFormatter = NumberFormatter()
-                numberFormatter.numberStyle = .decimal
-                numberFormatter.maximumFractionDigits = 20
-                numberFormatter.maximumIntegerDigits = 20
-                let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!) as! NSNumber)
-                
-                
-                resultLabel.text! = formattedResult!
+                formatNumber()
+//                let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
+//                let numberFormatter = NumberFormatter()
+//                numberFormatter.numberStyle = .decimal
+//                numberFormatter.maximumFractionDigits = 20
+//                numberFormatter.maximumIntegerDigits = 20
+//                let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!)! as NSNumber)
+//
+//                resultLabel.text! = trimmedResultLabel!
                 
                 label1.text = resultOperator.text! + " " + resultLabel.text!
+                
                 stackview.addArrangedSubview(label1)
+                
                 let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
                 
-                print("trimmed input = \(trimmedInput)")
-                //            formula = ExpressionParser.parse(from: trimmedInput)
                 realInput += trimmedInput
                 print(realInput)
             }
@@ -139,28 +138,6 @@ class ViewController: UIViewController {
             label1.isHidden = false
         }
         
-        // 0이면 사칙연산자 안 되게!
-        //        if realInput.isEmpty == true {
-        //            if Double(label1.text!) != 0.0 {
-        //                label1.text = resultOperator.text! + " " + resultLabel.text!
-        //                stackview.addArrangedSubview(label1)
-        //                let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
-        //
-        //                print("trimmed input = \(trimmedInput)")
-        //                //            formula = ExpressionParser.parse(from: trimmedInput)
-        //                realInput += trimmedInput
-        //                print(realInput)
-        //            }
-        //        } else {
-        //            label1.text = resultOperator.text! + " " + resultLabel.text!
-        //            stackview.addArrangedSubview(label1)
-        //            let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "")
-        //
-        //            print("trimmed input = \(trimmedInput)")
-        //            //            formula = ExpressionParser.parse(from: trimmedInput)
-        //            realInput += trimmedInput
-        //            print(realInput)
-        //        }
         
         resultLabel.text = "0"
         
@@ -192,15 +169,7 @@ class ViewController: UIViewController {
         label1.font = UIFont.preferredFont(forTextStyle: .title3)
         label1.adjustsFontForContentSizeCategory = true
         
-        let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
-        let numberFormatter = NumberFormatter()
-        numberFormatter.numberStyle = .decimal
-        numberFormatter.maximumFractionDigits = 20
-        numberFormatter.maximumIntegerDigits = 20
-        let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!) as! NSNumber)
-        
-        
-        resultLabel.text! = formattedResult!
+        formatNumber()
         
         label1.text = resultOperator.text! + " " + resultLabel.text!
         print("labe1.text = \(label1.text ?? "0")")
@@ -310,8 +279,28 @@ class ViewController: UIViewController {
             self.stackview.removeArrangedSubview(last)
         }
     }
+    
+    func formatNumber() {
+        let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.minimumIntegerDigits = 1
+        numberFormatter.minimumFractionDigits = 0
+        numberFormatter.maximumFractionDigits = 20
+        numberFormatter.maximumIntegerDigits = 20
+        let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!)! as NSNumber)
+        
+        resultLabel.text! = formattedResult!
+    }
 }
 
 // 4. 스택뷰 왼쪽에 뜨는거 안 없어져서 그런것 같은데?
 // 끝난 연산 결과에 대하여 양음 부호 전환이 가능하게
 // 00 인 경우 +-*/ 안눌리게 수정하기
+// 숫자 도중 소수점이 안됨
+
+
+//- 계산기 내 모든 숫자에 대하여 포맷 추가 ( 추후 함수로 빼낼 예정)
+//- 처음 시작시 0일 경우 연산자 기호가 안눌리게 (추후 00도 처리 예정)
+//- =이 자꾸 입력될 때 안 먹히게 하기 (이거 때문에 끝난 연산 결과에 대하여 양음 부호 전환이 가능하게하는게 안되는듯?)
+

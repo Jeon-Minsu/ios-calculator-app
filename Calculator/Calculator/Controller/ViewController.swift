@@ -87,7 +87,11 @@ class ViewController: UIViewController {
             return
         }
         
-        guard Double(resultLabel.text!) != 0.0 else {
+        guard let text = resultLabel.text else {
+            return
+        }
+        
+        guard Double(text) != 0.0 else {
             return
         }
         
@@ -169,8 +173,7 @@ class ViewController: UIViewController {
     }
     
     func clearStackView() {
-        while stackview.arrangedSubviews.count > 0
-        {
+        while stackview.arrangedSubviews.count > 0 {
             guard let last = stackview.arrangedSubviews.last else {
                 return
             }
@@ -205,7 +208,7 @@ class ViewController: UIViewController {
             return
         }
         
-        resultLabel.text! = formattedResult
+        resultLabel.text = formattedResult
     }
     
     func goToBottomOfScrollView() {
@@ -240,17 +243,32 @@ class ViewController: UIViewController {
         label1.font = UIFont.preferredFont(forTextStyle: .title3)
         label1.adjustsFontForContentSizeCategory = true
         
-        label1.text = resultOperator.text! + " " + resultLabel.text!
+        guard let operatorText = resultOperator.text else {
+            return
+        }
+        
+        guard let resultLabelText = resultLabel.text else {
+            return
+        }
+        
+        label1.text = operatorText + " " + resultLabelText
+        
         stackview.addArrangedSubview(label1)
-        let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
+        
+        guard let labelText = label1.text else {
+            return
+        }
+        
+        let whitespacesRemovedInput = labelText.replacingOccurrences(of: " ", with: "")
+        let commaRemovedInput = whitespacesRemovedInput.replacingOccurrences(of: ",", with: "")
         
         UIView.animate(withDuration: 0.3) {
             label1.isHidden = false
         }
         
-        realInput += trimmedInput
+        realInput += commaRemovedInput
     }
 }
 
 // 4. 스택뷰 왼쪽에 뜨는거 안 없어져서 그런것 같은데?
-// UILabel.text 옵셔널 처리
+

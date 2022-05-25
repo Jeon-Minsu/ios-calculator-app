@@ -13,8 +13,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var resultOperator: UILabel!
     @IBOutlet weak var scrollView: UIScrollView!
     
-    var formula: Formula = Formula(operands: CalculatorItemQueue<Double>(), operators: CalculatorItemQueue<String>())
-    
     private var realInput = ""
     
     override func viewDidLoad() {
@@ -35,76 +33,69 @@ class ViewController: UIViewController {
         
         let digit = sender.currentTitle
         
-        guard digit != "." || resultLabel.text!.filter({ $0 == "." }).count < 1 else {
+        guard var text = resultLabel.text else {
             return
         }
         
-        if let stringDigit: String = digit {
-            if resultLabel.text! == "0" {
-                resultLabel.text! = stringDigit
-            } else if resultLabel.text! == "00" {
-                resultLabel.text! = "0"
-            } else {
-                resultLabel.text! += stringDigit
-            }
+        guard digit != "." || text.filter({ $0 == "." }).count < 1 else {
+            return
         }
         
-        if resultLabel.text!.contains(".") == false {
-            let result = convertResultLabel()
-            formatCalculatorItems(number: result)
+        guard let unwrappedDigit: String = digit else {
+            return
         }
+        
+        if text == "0" {
+            resultLabel.text = unwrappedDigit
+        } else if text == "00" {
+            resultLabel.text = "0"
+        }
+        
+//        guard Double(unwrappedDigit) != 0.0 else {
+//            text = "0"
+//            resultLabel.text = text
+//            return
+//        }
+        
+        
+        text += unwrappedDigit
+        resultLabel.text = text
+        
+
+              
+        guard text.contains(".") == false else {
+            return
+        }
+        
+        let result = convertResultLabel()
+        formatCalculatorItems(number: result)
         
     }
     
     @IBAction func touchOperatorButton(_ sender: UIButton) {
+//        guard let resultLabel = resultLabel else {
+//            return
+//        }
+//
+//        guard case resultLabel.text = resultLabel.text else {
+//            return
+//        }
+        
         guard resultLabel.text != "0" ||  stackview.arrangedSubviews.count > 0 else {
             return
         }
         
-        let label1 = UILabel()
-        label1.isHidden = true
-        label1.text = resultLabel.text!
-        label1.numberOfLines = 0
-        label1.textColor = .white
-        label1.font = UIFont.preferredFont(forTextStyle: .title3)
-        label1.adjustsFontForContentSizeCategory = true
-        
-        if Double(label1.text!) != 0.0 {
-            if resultOperator.text == "" && stackview.arrangedSubviews.count > 0 {
-                
-                clearStackView()
-                
-                let result = convertResultLabel()
-                formatCalculatorItems(number: result)
-                
-                label1.text = resultOperator.text! + " " + resultLabel.text!
-                stackview.addArrangedSubview(label1)
-                let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
-                
-                realInput += trimmedInput
-            } else {
-                let result = convertResultLabel()
-                formatCalculatorItems(number: result)
-                
-                label1.text = resultOperator.text! + " " + resultLabel.text!
-                
-                stackview.addArrangedSubview(label1)
-                
-                let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
-                
-                realInput += trimmedInput
-
-            }
+        guard Double(resultLabel.text!) != 0.0 else {
+            return
         }
         
-        UIView.animate(withDuration: 0.3) {
-            label1.isHidden = false
+        if resultOperator.text == "" && stackview.arrangedSubviews.count > 0 {
+            clearStackView()
         }
         
-        resetResultLabel()
-        
+        addCalculatorItems()
         resultOperator.text = sender.currentTitle
-        
+        resetResultLabel()
         goToBottomOfScrollView()
     }
     
@@ -113,55 +104,31 @@ class ViewController: UIViewController {
             return
         }
         
-        let result = convertResultLabel()
-        formatCalculatorItems(number: result)
+        addCalculatorItems()
         
-        let label1 = UILabel()
-        label1.isHidden = true
-        label1.text = resultLabel.text!
-        label1.numberOfLines = 0
-        label1.textColor = .white
-        label1.font = UIFont.preferredFont(forTextStyle: .title3)
-        label1.adjustsFontForContentSizeCategory = true
-        
-        
-        
-        label1.text = resultOperator.text! + " " + resultLabel.text!
-
-        stackview.addArrangedSubview(label1)
-        let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
-        
-        UIView.animate(withDuration: 0.3) {
-            label1.isHidden = false
-        }
-        
-        realInput += trimmedInput
-        
-        formula = ExpressionParser.parse(from: realInput)
-        
-        resetResultOperator()
+        var formula = ExpressionParser.parse(from: realInput)
         
         do {            
             let result = try formula.result()
             formatCalculatorItems(number: result)
-            
         } catch (let error) {
             switch error {
             case CalculatorError.dividedByZero:
-                resultLabel.text = "NaN"
+                resultLabel.text = CalculatorError.dividedByZero.localizedDescription
             case CalculatorError.notEnoughOperands:
-                resultLabel.text = "not enough operands"
+                resultLabel.text = CalculatorError.notEnoughOperands.localizedDescription
             case CalculatorError.notEnoughOperators:
-                resultLabel.text = "not enough operators"
+                resultLabel.text = CalculatorError.notEnoughOperators.localizedDescription
             case CalculatorError.emptyQueues:
-                resultLabel.text = "empty queues"
+                resultLabel.text = CalculatorError.emptyQueues.localizedDescription
             case CalculatorError.invalidOperator:
-                resultLabel.text = "invalid operator"
+                resultLabel.text = CalculatorError.invalidOperator.localizedDescription
             default:
                 resultLabel.text = "unknown error"
             }
         }
         
+        resetResultOperator()
         goToBottomOfScrollView()
         resetNumberInput()
     }
@@ -208,6 +175,7 @@ class ViewController: UIViewController {
     func convertResultLabel() -> Double {
         let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
         let trimmedResultLabelToDouble = Double(trimmedResultLabel!)!
+        
         return trimmedResultLabelToDouble
     }
     
@@ -244,6 +212,28 @@ class ViewController: UIViewController {
         realInput = ""
     }
     
+    func addCalculatorItems() {
+        let result = convertResultLabel()
+        formatCalculatorItems(number: result)
+        
+        let label1 = UILabel()
+        label1.isHidden = true
+        label1.text = resultLabel.text!
+        label1.numberOfLines = 0
+        label1.textColor = .white
+        label1.font = UIFont.preferredFont(forTextStyle: .title3)
+        label1.adjustsFontForContentSizeCategory = true
+        
+        label1.text = resultOperator.text! + " " + resultLabel.text!
+        stackview.addArrangedSubview(label1)
+        let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
+        
+        UIView.animate(withDuration: 0.3) {
+            label1.isHidden = false
+        }
+        
+        realInput += trimmedInput
+    }
 }
 
 // 4. 스택뷰 왼쪽에 뜨는거 안 없어져서 그런것 같은데?

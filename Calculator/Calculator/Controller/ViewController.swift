@@ -50,7 +50,8 @@ class ViewController: UIViewController {
         }
         
         if resultLabel.text!.contains(".") == false {
-            formatNumber()
+            let result = convertResultLabel()
+            formatCalculatorItems(number: result)
         }
         
     }
@@ -73,7 +74,8 @@ class ViewController: UIViewController {
                 
                 clearStackView()
                 
-                formatNumber()
+                let result = convertResultLabel()
+                formatCalculatorItems(number: result)
                 
                 label1.text = resultOperator.text! + " " + resultLabel.text!
                 stackview.addArrangedSubview(label1)
@@ -81,7 +83,8 @@ class ViewController: UIViewController {
                 
                 realInput += trimmedInput
             } else {
-                formatNumber()
+                let result = convertResultLabel()
+                formatCalculatorItems(number: result)
                 
                 label1.text = resultOperator.text! + " " + resultLabel.text!
                 
@@ -90,7 +93,7 @@ class ViewController: UIViewController {
                 let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
                 
                 realInput += trimmedInput
-                print(realInput)
+
             }
         }
         
@@ -110,6 +113,9 @@ class ViewController: UIViewController {
             return
         }
         
+        let result = convertResultLabel()
+        formatCalculatorItems(number: result)
+        
         let label1 = UILabel()
         label1.isHidden = true
         label1.text = resultLabel.text!
@@ -118,10 +124,10 @@ class ViewController: UIViewController {
         label1.font = UIFont.preferredFont(forTextStyle: .title3)
         label1.adjustsFontForContentSizeCategory = true
         
-        formatNumber()
+        
         
         label1.text = resultOperator.text! + " " + resultLabel.text!
-        print("labe1.text = \(label1.text ?? "0")")
+
         stackview.addArrangedSubview(label1)
         let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
         
@@ -135,17 +141,9 @@ class ViewController: UIViewController {
         
         resetResultOperator()
         
-        do {
-            let numberFormatter = NumberFormatter()
-            numberFormatter.numberStyle = .decimal
-            numberFormatter.maximumFractionDigits = 20
-            numberFormatter.maximumIntegerDigits = 20
-            //            numberFormatter.roundingMode = .ceiling
-            //            numberFormatter.usesSignificantDigits = true
-            //            numberFormatter.maximumSignificantDigits = 20
-            
-            let formattedResult = numberFormatter.string(from: try formula.result() as NSNumber)
-            resultLabel.text = formattedResult
+        do {            
+            let result = try formula.result()
+            formatCalculatorItems(number: result)
             
         } catch (let error) {
             switch error {
@@ -190,7 +188,8 @@ class ViewController: UIViewController {
         
         if Double(trimmedResultLabel) != 0 {
             resultLabel.text! = String(-Double(trimmedResultLabel)!)
-            formatNumber()
+            let result = convertResultLabel()
+            formatCalculatorItems(number: result)
         }
         
     }
@@ -206,17 +205,25 @@ class ViewController: UIViewController {
         }
     }
     
-    func formatNumber() {
+    func convertResultLabel() -> Double {
         let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
+        let trimmedResultLabelToDouble = Double(trimmedResultLabel!)!
+        return trimmedResultLabelToDouble
+    }
+    
+    func formatCalculatorItems(number: Double) {
         let numberFormatter = NumberFormatter()
         numberFormatter.numberStyle = .decimal
         numberFormatter.minimumIntegerDigits = 1
         numberFormatter.minimumFractionDigits = 0
         numberFormatter.maximumFractionDigits = 20
         numberFormatter.maximumIntegerDigits = 20
-        let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!)! as NSNumber)
         
-        resultLabel.text! = formattedResult!
+        guard let formattedResult = numberFormatter.string(from: number as NSNumber) else {
+            return
+        }
+        
+        resultLabel.text! = formattedResult
     }
     
     func goToBottomOfScrollView() {

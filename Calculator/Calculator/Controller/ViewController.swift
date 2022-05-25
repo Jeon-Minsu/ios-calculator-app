@@ -187,10 +187,6 @@ class ViewController: UIViewController {
         print(realInput)
         
         
-        //        realInput += resultOperator.text!
-        //        realInput += resultLabel.text!
-        //        print(realInput)
-        
         formula = ExpressionParser.parse(from: realInput)
         
         resultOperator.text = ""
@@ -263,8 +259,13 @@ class ViewController: UIViewController {
     }
     
     @IBAction func touchSignChangerButton(_ sender: UIButton) {
-        if Double(resultLabel.text!)! != 0 {
-            resultLabel.text! = String(-Double(resultLabel.text!)!)
+        guard let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "") else {
+            return
+        }
+        
+        if Double(trimmedResultLabel) != 0 {
+            resultLabel.text! = String(-Double(trimmedResultLabel)!)
+            formatNumber()
         }
         
     }
@@ -295,12 +296,4 @@ class ViewController: UIViewController {
 }
 
 // 4. 스택뷰 왼쪽에 뜨는거 안 없어져서 그런것 같은데?
-// 끝난 연산 결과에 대하여 양음 부호 전환이 가능하게
-// 00 인 경우 +-*/ 안눌리게 수정하기
-// 숫자 도중 소수점이 안됨
-
-
-//- 계산기 내 모든 숫자에 대하여 포맷 추가 ( 추후 함수로 빼낼 예정)
-//- 처음 시작시 0일 경우 연산자 기호가 안눌리게 (추후 00도 처리 예정)
-//- =이 자꾸 입력될 때 안 먹히게 하기 (이거 때문에 끝난 연산 결과에 대하여 양음 부호 전환이 가능하게하는게 안되는듯?)
 

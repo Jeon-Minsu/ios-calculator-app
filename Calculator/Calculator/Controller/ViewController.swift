@@ -23,20 +23,19 @@ class ViewController: UIViewController {
         resultOperator.text = ""
         
         // 왼쪽으로 튀어나오고 난리났음 수정 필요!
-        while stackview.arrangedSubviews.count > 0
-        {
-            guard let last = stackview.arrangedSubviews.last else {
-                return
-            }
-            
-            self.stackview.removeArrangedSubview(last)
-        }
-        print("−" == "-")
+        clearStackView()
     }
     
     @IBAction func touchNumberButton(_ sender: UIButton) {
         // 처음 0으로 시작하는데
         // 숫자가 입력되면 0을 없애야함
+        guard stackview.arrangedSubviews.count <= 0 || resultOperator.text != "" else {
+            clearStackView()
+            
+            resultLabel.text = sender.currentTitle
+            return
+        }
+        
         let digit = sender.currentTitle
         
         if let stringDigit: String = digit {
@@ -46,6 +45,17 @@ class ViewController: UIViewController {
                 resultLabel.text! = "0"
             } else {
                 resultLabel.text! += stringDigit
+                
+                
+                let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
+                let numberFormatter = NumberFormatter()
+                numberFormatter.numberStyle = .decimal
+                numberFormatter.maximumFractionDigits = 20
+                numberFormatter.maximumIntegerDigits = 20
+                let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!) as! NSNumber)
+                
+                
+                resultLabel.text! = formattedResult!
             }
         }
         
@@ -57,9 +67,15 @@ class ViewController: UIViewController {
         // 스크롤뷰 내 스택뷰 기본값 없애야 함!
         
         
-        // 이 값은 나중에 계산할때만 쓰면 되는건가?
-        //        formula = ExpressionParser.parse(from: resultLabel.text!)
-        //        formula = ExpressionParser.parse(from: resultOperator.text!)
+        
+        //        guard stackview.arrangedSubviews.count >= 0 || resultOperator.text != "" else {
+        //            return
+        //        }
+        //
+        guard resultLabel.text != "0" ||  stackview.arrangedSubviews.count > 0 else {
+            return
+        }
+        
         
         let label1 = UILabel()
         label1.isHidden = true
@@ -70,14 +86,53 @@ class ViewController: UIViewController {
         label1.adjustsFontForContentSizeCategory = true
         
         if Double(label1.text!) != 0.0 {
-            label1.text = resultOperator.text! + " " + resultLabel.text!
-            stackview.addArrangedSubview(label1)
-            let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
-            
-            print("trimmed input = \(trimmedInput)")
-            //            formula = ExpressionParser.parse(from: trimmedInput)
-            realInput += trimmedInput
-            print(realInput)
+            if resultOperator.text == "" && stackview.arrangedSubviews.count > 0 {
+                
+                clearStackView()
+                
+                let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
+                let numberFormatter = NumberFormatter()
+                numberFormatter.numberStyle = .decimal
+                numberFormatter.maximumFractionDigits = 20
+                numberFormatter.maximumIntegerDigits = 20
+                let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!) as! NSNumber)
+                
+                
+                resultLabel.text! = formattedResult!
+                
+                label1.text = resultOperator.text! + " " + resultLabel.text!
+                stackview.addArrangedSubview(label1)
+                let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
+                
+                print("trimmed input = \(trimmedInput)")
+                //            formula = ExpressionParser.parse(from: trimmedInput)
+                realInput += trimmedInput
+                print(realInput)
+                
+            } else {
+                print("resultLabel text is \(resultLabel.text)"
+                )
+                
+                
+                let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
+                let numberFormatter = NumberFormatter()
+                numberFormatter.numberStyle = .decimal
+                numberFormatter.maximumFractionDigits = 20
+                numberFormatter.maximumIntegerDigits = 20
+                let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!) as! NSNumber)
+                
+                
+                resultLabel.text! = formattedResult!
+                
+                label1.text = resultOperator.text! + " " + resultLabel.text!
+                stackview.addArrangedSubview(label1)
+                let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
+                
+                print("trimmed input = \(trimmedInput)")
+                //            formula = ExpressionParser.parse(from: trimmedInput)
+                realInput += trimmedInput
+                print(realInput)
+            }
         }
         
         UIView.animate(withDuration: 0.3) {
@@ -120,11 +175,15 @@ class ViewController: UIViewController {
         print(formula.operators.queue.dequeueStack)
         
         scrollView.setContentOffset(CGPoint(x: 0,
-                                                y: scrollView.contentSize.height - scrollView.bounds.height),
-                                        animated: true)
+                                            y: scrollView.contentSize.height - scrollView.bounds.height),
+                                    animated: true)
     }
     
     @IBAction func touchResultButton(_ sender: UIButton) {
+        guard resultOperator.text != "" else {
+            return
+        }
+        
         let label1 = UILabel()
         label1.isHidden = true
         label1.text = resultLabel.text!
@@ -133,12 +192,21 @@ class ViewController: UIViewController {
         label1.font = UIFont.preferredFont(forTextStyle: .title3)
         label1.adjustsFontForContentSizeCategory = true
         
+        let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
+        let numberFormatter = NumberFormatter()
+        numberFormatter.numberStyle = .decimal
+        numberFormatter.maximumFractionDigits = 20
+        numberFormatter.maximumIntegerDigits = 20
+        let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!) as! NSNumber)
+        
+        
+        resultLabel.text! = formattedResult!
         
         label1.text = resultOperator.text! + " " + resultLabel.text!
         print("labe1.text = \(label1.text ?? "0")")
         stackview.addArrangedSubview(label1)
         let trimmedInput = label1.text!.replacingOccurrences(of: " ", with: "").replacingOccurrences(of: ",", with: "")
-
+        
         
         print("trimmed input = \(trimmedInput)")
         //            formula = ExpressionParser.parse(from: trimmedInput)
@@ -150,42 +218,43 @@ class ViewController: UIViewController {
         print(realInput)
         
         
-//        realInput += resultOperator.text!
-//        realInput += resultLabel.text!
-//        print(realInput)
+        //        realInput += resultOperator.text!
+        //        realInput += resultLabel.text!
+        //        print(realInput)
         
         formula = ExpressionParser.parse(from: realInput)
         
         resultOperator.text = ""
+        
         
         print(formula.operands.queue.enqueueStack)
         print(formula.operators.queue.enqueueStack)
         print(formula.operands.queue.dequeueStack)
         print(formula.operators.queue.dequeueStack)
         
-
+        
         
         do {
             let numberFormatter = NumberFormatter()
             numberFormatter.numberStyle = .decimal
-//            numberFormatter.maximumFractionDigits = -2 //소수점 최대 자릿수
-//            numberFormatter.roundingMode = .up
-//            numberFormatter.maximumIntegerDigits = 20
-//            numberFormatter.maximumSignificantDigits = 20
-//            numberFormatter.minimumSignificantDigits = 3  // 자르길 원하는 자릿수
+            //            numberFormatter.maximumFractionDigits = -2 //소수점 최대 자릿수
+            //            numberFormatter.roundingMode = .up
+            //            numberFormatter.maximumIntegerDigits = 20
+            //            numberFormatter.maximumSignificantDigits = 20
+            //            numberFormatter.minimumSignificantDigits = 3  // 자르길 원하는 자릿수
             
-//            numberFormatter.roundingMode = .up
-//
+            //            numberFormatter.roundingMode = .up
+            //
             numberFormatter.maximumFractionDigits = 20
             numberFormatter.maximumIntegerDigits = 20
             
-//            numberFormatter.usesSignificantDigits = true
-//            numberFormatter.maximumSignificantDigits = 20
+            //            numberFormatter.usesSignificantDigits = true
+            //            numberFormatter.maximumSignificantDigits = 20
             
             
             let formattedResult = numberFormatter.string(from: try formula.result() as NSNumber)
             resultLabel.text = formattedResult
-//            resultLabel.text = String(try formula.result())
+            //            resultLabel.text = String(try formula.result())
         } catch (let error) {
             switch error {
             case CalculatorError.dividedByZero:
@@ -209,14 +278,7 @@ class ViewController: UIViewController {
     }
     
     @IBAction func touchAllClearButton(_ sender: UIButton) {
-        while stackview.arrangedSubviews.count > 0
-        {
-            guard let last = stackview.arrangedSubviews.last else {
-                return
-            }
-            
-            self.stackview.removeArrangedSubview(last)
-        }
+        clearStackView()
         
         resultLabel.text = "0"
         resultOperator.text = ""
@@ -227,14 +289,7 @@ class ViewController: UIViewController {
         resultLabel.text = "0"
         
         if realInput == "" {
-            while stackview.arrangedSubviews.count > 0
-            {
-                guard let last = stackview.arrangedSubviews.last else {
-                    return
-                }
-                
-                self.stackview.removeArrangedSubview(last)
-            }
+            clearStackView()
         }
     }
     
@@ -244,8 +299,19 @@ class ViewController: UIViewController {
         }
         
     }
+    
+    func clearStackView() {
+        while stackview.arrangedSubviews.count > 0
+        {
+            guard let last = stackview.arrangedSubviews.last else {
+                return
+            }
+            
+            self.stackview.removeArrangedSubview(last)
+        }
+    }
 }
 
-// 2. = 버튼을 눌러 연산을 마친 후 다시 =을 눌러도 이전 연산을 다시 연산하지 않습니다
-// 3. 결과값 나온 다음 또 숫자 입력하면 현재 결과값이 스택뷰로 올라가고 다시 새로운 숫자가 입력되게 해야하나?
 // 4. 스택뷰 왼쪽에 뜨는거 안 없어져서 그런것 같은데?
+// 끝난 연산 결과에 대하여 양음 부호 전환이 가능하게
+// 00 인 경우 +-*/ 안눌리게 수정하기

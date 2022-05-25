@@ -49,18 +49,6 @@ class ViewController: UIViewController {
                 resultLabel.text! = "0"
             } else {
                 resultLabel.text! += stringDigit
-                
-                
-//                formatNumber()
-                
-//                let trimmedResultLabel = resultLabel.text?.replacingOccurrences(of: ",", with: "")
-//                let numberFormatter = NumberFormatter()
-//                numberFormatter.numberStyle = .decimal
-//                numberFormatter.maximumFractionDigits = 20
-//                numberFormatter.maximumIntegerDigits = 20
-//                let formattedResult = numberFormatter.string(from: Double(trimmedResultLabel!)! as NSNumber)
-//
-//                resultLabel.text! = formattedResult!
             }
         }
         
@@ -74,17 +62,9 @@ class ViewController: UIViewController {
         // 연산자가 입력되면 결과label을 0으로 만들고
         // 결과 label에 이때까지 입력된 값을 스크롤뷰 내 stackView로 올려야함
         // 스크롤뷰 내 스택뷰 기본값 없애야 함!
-        
-        
-        
-        //        guard stackview.arrangedSubviews.count >= 0 || resultOperator.text != "" else {
-        //            return
-        //        }
-        //
         guard resultLabel.text != "0" ||  stackview.arrangedSubviews.count > 0 else {
             return
         }
-        
         
         let label1 = UILabel()
         label1.isHidden = true

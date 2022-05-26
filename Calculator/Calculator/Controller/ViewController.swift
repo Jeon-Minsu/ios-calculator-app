@@ -83,7 +83,7 @@ class ViewController: UIViewController {
 //            return
 //        }
         
-        guard resultLabel.text != "0" ||  stackview.arrangedSubviews.count > 0 else {
+        guard resultLabel.text != "0" || stackview.arrangedSubviews.count > 0 else {
             return
         }
         
@@ -177,7 +177,7 @@ class ViewController: UIViewController {
             guard let last = stackview.arrangedSubviews.last else {
                 return
             }
-            
+
             stackview.removeArrangedSubview(last)
             last.removeFromSuperview()
         }
@@ -254,7 +254,9 @@ class ViewController: UIViewController {
         
         label1.text = operatorText + " " + resultLabelText
         
-        stackview.addArrangedSubview(label1)
+        let stackView1 = UIStackView(arrangedSubviews: [label1])
+        
+        stackview.addArrangedSubview(stackView1)
         
         guard let labelText = label1.text else {
             return
@@ -271,5 +273,7 @@ class ViewController: UIViewController {
     }
 }
 
-// 4. 스택뷰 왼쪽에 뜨는거 안 없어져서 그런것 같은데?
+// 스택뷰 처음 쌓아올릴 시 왼쪽에서 애니메이션이 나오고 다음 것들은 아래에서 위로 정상적으로 나옴
+// 물론 UIView.animate(withDuration: 0.00000001) 나 처음 label1.isHidden = false 로 하면 이게 티가 안 날수는 있지만
+// 왜 이렇게 작동하는 거지..?
 
